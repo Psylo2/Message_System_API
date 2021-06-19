@@ -5,10 +5,10 @@ from flask_jwt_extended import (jwt_required, get_raw_jwt,
                                 create_refresh_token)
 from flask_restful import Resource, reqparse
 from libs.blacklist import BLACKLIST
-from libs.strings import gettext, lang_change
+from libs.strings import gettext
 from libs.inputs_validation import (valid_email, valid_username,
                                     valid_password, valid_login_inputs,
-                                    valid_msg_inputs)
+                                    )
 from db.data_base import insert_timestamp
 from models.user import UserModel
 from models.log import LogModel

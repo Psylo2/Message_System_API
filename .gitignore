@@ -1,2 +1,6 @@
-__pycache__/
+.vscode/
 *.pyc
+.idea/
+__pycache__/
+*.db
+venv/

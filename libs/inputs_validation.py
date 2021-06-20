@@ -17,8 +17,7 @@ def valid_email(email: str):
     no more then 2 dots after '@',
     dont finish with dot"""
     if __sanitizer(email):
-
-        reg = r"^([\w\-\.]{2,})+[^\.]+[@]+[^\.]+[\w\-\.]+[A-Za-z\.]*[\.][A-Za-z]+$"
+        reg = r"^[a-zA-Z0-9+_.-]+[^\.]+[@]+[^\.]+[a-zA-Z0-9]+[\w\.\-]+[a-zA-Z]{2,3}$"
         return True if re.match(reg, email) else False
 
 

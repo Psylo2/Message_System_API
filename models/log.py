@@ -1,4 +1,4 @@
-from db.database import db, insert_timestamp
+from db.database import db, insert_timestamp, convert_timestamp
 
 
 class LogModel(db.Model):
@@ -20,7 +20,7 @@ class LogModel(db.Model):
         self.create_at = insert_timestamp()
 
     def json(self):
-        return {self.idx: [{"create_at": self.create_at,
+        return {self.idx: [{"create_at": convert_timestamp(self.create_at),
                             "user_id": self.user_id,
                             "action": self.action,
                             "threat_lvl": self.threat_lvl}]}

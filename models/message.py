@@ -1,3 +1,6 @@
+from werkzeug.security import safe_str_cmp
+from models.log import LogModel
+
 from db.database import db, convert_timestamp, insert_timestamp
 
 
@@ -38,19 +41,39 @@ class MessageModel(db.Model):
         self._update_read_status() if update else None
         st = "Read" if self.read_status else "Unread"
         re = convert_timestamp(self.read_at) if self.read_at is not None else "Unread"
-        return {"from_user": sender, "to_user": receiver,
-                "msg_status": st, "msg_title": self.msg_title,
-                "msg_body": self.msg_body, "create_date": convert_timestamp(self.create_date),
-                "read_at": re}
+
+        if safe_str_cmp(self.__gen_hash(), self.hash):
+            LogModel(self.idx,
+                     f"[{self.idx}] MESSAGE CHECKSUM: TRUE",
+                     'L').save_to_db()
+            return {"from_user": sender, "to_user": receiver,
+                    "msg_status": st, "msg_title": self.msg_title,
+                    "msg_body": self.msg_body, "create_date": convert_timestamp(self.create_date),
+                    "read_at": re}
+
+        LogModel(self.idx,
+                 f"[{self.idx}] MESSAGE -  BEEN TEMPERED",
+                 'H').save_to_db()
+        return {self.idx: 'Message Been TAMPERED'}
+
 
     def json_only_titles(self, sender: str, receiver: str):
         """Json display pick msg menu for user"""
         st = "Read" if self.read_status else "Unread"
         re = convert_timestamp(self.read_at) if self.read_at is not None else "Unread"
-        return {self.idx: [{"from_user": sender, "to_user": receiver,
-                            "msg_status": st, "msg_title": self.msg_title,
-                            "create_date": convert_timestamp(self.create_date), "read_at": re}]
-                }
+
+        if safe_str_cmp(self.__gen_hash(), self.hash):
+            LogModel(self.idx,
+                     f"[{self.idx}] MESSAGE CHECKSUM: TRUE",
+                     'L').save_to_db()
+            return {self.idx: [{"from_user": sender, "to_user": receiver,
+                                "msg_status": st, "msg_title": self.msg_title,
+                                "create_date": convert_timestamp(self.create_date), "read_at": re}]
+                    }
+        LogModel(self.idx,
+                 f"[{self.idx}] MESSAGE -  BEEN TEMPERED",
+                 'H').save_to_db()
+        return {self.idx: 'Message Been TAMPERED'}
 
     def save_to_db(self) -> None:
         """Save msg to DB"""

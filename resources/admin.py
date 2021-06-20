@@ -3,7 +3,6 @@ from flask_jwt_extended import (jwt_required,
                                 get_jwt_claims)
 from flask_restful import Resource
 from libs.strings import gettext
-from db.database import insert_timestamp
 from models.user import UserModel
 from models.log import LogModel
 

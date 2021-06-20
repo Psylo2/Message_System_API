@@ -1,4 +1,4 @@
-from db.data_base import db, convert_timestamp, insert_timestamp
+from db.database import db, convert_timestamp, insert_timestamp
 
 
 class MessageModel(db.Model):
@@ -33,18 +33,19 @@ class MessageModel(db.Model):
                        convert_timestamp(self.create_date)).encode('UTF-8'))
         return sha512.hexdigest()
 
-    def json_read_msg(self, sender: str, receiver: str):
+    def json_read_msg(self, sender: str, receiver: str, update: bool):
         """Json MSG TITLE + BODY"""
-        self._update_read_status()
-        st = "Read" if self.read_status is True else "Unread"
+        self._update_read_status() if update else None
+        st = "Read" if self.read_status else "Unread"
+        re = convert_timestamp(self.read_at) if self.read_at is not None else "Unread"
         return {"from_user": sender, "to_user": receiver,
                 "msg_status": st, "msg_title": self.msg_title,
                 "msg_body": self.msg_body, "create_date": convert_timestamp(self.create_date),
-                "read_at": convert_timestamp(self.read_at)}
+                "read_at": re}
 
     def json_only_titles(self, sender: str, receiver: str):
         """Json display pick msg menu for user"""
-        st = "Read" if self.read_status is True else "Unread"
+        st = "Read" if self.read_status else "Unread"
         re = convert_timestamp(self.read_at) if self.read_at is not None else "Unread"
         return {self.idx: [{"from_user": sender, "to_user": receiver,
                             "msg_status": st, "msg_title": self.msg_title,
@@ -91,7 +92,7 @@ class MessageModel(db.Model):
         """return all delivered messages of a user that have been marked READ """
         return cls.query.filter_by(from_user=cls.idx, read_status=True).order_by(db.desc(MessageModel.idx)).all()
 
-    def _update_read_status(self) -> "MessageModel":
+    def _update_read_status(self) -> None:
         """UPDATE a msg to READ status """
         x = MessageModel.query.filter_by(idx=self.idx).update(dict(read_status=True))
         self.read_at = insert_timestamp()

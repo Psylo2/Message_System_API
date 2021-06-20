@@ -1,5 +1,3 @@
-import os
-from datetime import timedelta
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
@@ -7,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv(".env", verbose=True)
 
-from db.data_base import db
+from db.database import db
 from libs.blacklist import BLACKLIST
 from resources.user import (UserRegister, UserLogin,
                             UserLogout, TokenRefresh,
@@ -21,28 +19,10 @@ from resources.message import (MessageSend, MessageRead, MessageAllUnread,
 
 app = Flask(__name__)
 
-app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
-app.config['APP_SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')
-app.config['DEBUG'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///db/data.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=25)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=5)
-app.config['JWT_BLACKLIST_ENABLED'] = True
-app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ["access", "refresh"]
+app.config.from_object("default_config")
+app.config.from_envvar("APPLICATION_SETTINGS")
 
 db.init_app(app)
-
-
-@app.before_first_request
-def create_tables():
-    """Create tables and save Admin identity"""
-    db.create_all()
-    # admin_priv(os.environ.get('ADMIN_NAME'),
-    #            os.environ.get('ADMIN_EMAIL'),
-    #            os.environ.get('ADMIN_PASSWORD'))
-
 
 api = Api(app)
 
@@ -64,7 +44,7 @@ def add_claims_to_jwt(identity):
     return {'is_admin': False}
 
 
-# resources.users
+# resources.user
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogout, '/logout')
@@ -79,7 +59,7 @@ api.add_resource(AdminSearchByThreat, '/logs/level=<string:lvl>')
 api.add_resource(AdminSearchUserThreat, '/logs/id=<int:user_id>&level=<string:lvl>')
 api.add_resource(AdminSearchByUserId, '/logs/user=<int:user_id>')
 
-# resources.msg
+# resources.message
 api.add_resource(MessageSend, '/msg/send')
 api.add_resource(MessageRead, '/msg/id=<int:msg_id>')
 api.add_resource(MessageAllUnread, '/msg/all_unread')

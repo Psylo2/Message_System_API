@@ -6,7 +6,7 @@
 """
 import re
 
-from db.data_base import insert_timestamp
+from db.database import insert_timestamp
 from models.log import LogModel
 
 

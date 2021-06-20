@@ -1,4 +1,4 @@
-from db.data_base import db, insert_timestamp
+from db.database import db, insert_timestamp
 
 
 class LogModel(db.Model):

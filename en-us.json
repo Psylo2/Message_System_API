@@ -4,12 +4,11 @@
   "admin_privilege": "Admin privilege required.",
   "input_error": "Invalid Inputs",
   "language_changed": "Language has changed successfully",
-
   "user_registered": "User successfully Registered!",
   "user_internal_server_error": "Internal server error, Failed to creat user.",
   "user_not_found": "User not found.",
   "user_deleted": "User is been Deleted",
-  "user_logout":  "User successfully logged out.",
+  "user_logout": "User successfully logged out.",
   "user_already_block": "User already in block list",
   "user_password_updated": "Password has been changed successfully.",
   "user_email_taken": "Email already exists.",
@@ -19,6 +18,5 @@
   "password_error": "Password must contain 1 Upper 1 Lower 1 Digit 1 Special, and between 10 and 16 characters",
   "password_changed": "Password Changed Successfully.",
   "passwords_not_match": "Password dont match",
-
   "msg_sent": "Message Sent."
 }

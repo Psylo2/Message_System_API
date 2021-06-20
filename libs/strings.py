@@ -1,9 +1,8 @@
-"""this fils is made for
+"""this file is made for
 [*] Contain all strings outputs in one place
 [*] Json file selected will be save in cache
-[*] could Change Languages in app for not in demo
 
-By default, uses 'en-us.json' file inside the 'strings' top-level folder.py
+By default, uses 'en-us.json'
 """
 import json
 

@@ -43,6 +43,9 @@ class MessageSend(Resource):
             return {'message': gettext("input_error")}, 400
 
         user = UserModel.find_by_username(data['send_to'])
+        if user is None:
+            return {'message': gettext("user_not_found")}, 401
+
         msg = MessageModel(get_jwt_identity(), user.idx,
                            data['title'], data['body'])
         msg.save_to_db()
@@ -59,6 +62,7 @@ class MessageRead(Resource):
     def get(cls, msg_id: int):
         """Read Message:     [*] check MSG, Sender, Receiver exists.
                              [*] Verify MSG belongs to Reader identity
+                             [*] only receiver set mark as read
                              [*] Display MSG"""
         msg = MessageModel.find_msg_by_id(msg_id)
         try:
@@ -66,11 +70,16 @@ class MessageRead(Resource):
             receiver = UserModel.find_by_id(msg.to_user)
         except Exception:
             return {"message": gettext("invalid_credentials")}, 401
-        if get_jwt_identity() == sender.idx or get_jwt_identity() == receiver.idx:
+        if get_jwt_identity() == sender.idx:
             LogModel(get_jwt_identity(),
-                     f"Msg from User: [{sender.idx}], Mark as READ",
+                     f"Read Msg to User: [{receiver.idx}]",
                      'L').save_to_db()
-            return msg.json_read_msg(sender.name, receiver.name), 200
+            return msg.json_read_msg(sender.name, receiver.name, False), 200
+        if get_jwt_identity() == receiver.idx:
+            LogModel(get_jwt_identity(),
+                     f"Read Msg from User: [{sender.idx}], Mark as READ",
+                     'L').save_to_db()
+            return msg.json_read_msg(sender.name, receiver.name, True), 200
         return {"message": gettext("invalid_credentials")}, 401
 
 

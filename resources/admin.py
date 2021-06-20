@@ -3,7 +3,7 @@ from flask_jwt_extended import (jwt_required,
                                 get_jwt_claims)
 from flask_restful import Resource
 from libs.strings import gettext
-from db.data_base import insert_timestamp
+from db.database import insert_timestamp
 from models.user import UserModel
 from models.log import LogModel
 
@@ -12,14 +12,6 @@ from models.log import LogModel
               [*] Watch All Logs by Treat Level, 
               [*] Watch All Logs of a User by Treat Level,
               [*] Watch All Logs of a User"""
-
-
-def admin_priv(name: str, email: str, password):
-    """Grant admin privileges on create app"""
-    admin = UserModel(name=name, email=email, password=password)
-    print(admin.idx, admin.name, admin.email, admin.password)
-    admin.create_at = insert_timestamp()
-    admin.save_to_db()
 
 
 class AdminUsersList(Resource):

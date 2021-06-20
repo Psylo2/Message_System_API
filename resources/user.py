@@ -9,7 +9,7 @@ from libs.strings import gettext
 from libs.inputs_validation import (valid_email, valid_username,
                                     valid_password, valid_login_inputs,
                                     )
-from db.data_base import insert_timestamp
+from db.database import insert_timestamp
 from models.user import UserModel
 from models.log import LogModel
 

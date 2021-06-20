@@ -169,7 +169,7 @@ endpoint: `\admin_users_list`
 - Search Log by threat level
 - search all Logs of a user by user ID
 - search all Logs of a user and threat level
-- 
+
 
 ### Display All Logs**
 _[__Admin only__] Display all Logs_

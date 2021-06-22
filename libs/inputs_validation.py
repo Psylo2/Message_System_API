@@ -6,7 +6,6 @@
 """
 import re
 
-from db.database import insert_timestamp
 from models.log import LogModel
 
 
@@ -17,7 +16,7 @@ def valid_email(email: str):
     no more then 2 dots after '@',
     dont finish with dot"""
     if __sanitizer(email):
-        reg = r"^[a-zA-Z0-9+_.-]+[^\.]+[@]+[^\.]+[a-zA-Z0-9]+[\w\.\-]+[a-zA-Z]{2,3}$"
+        reg = r"^[a-zA-Z0-9+_.-]+[^\.\_]+[@]+[^\.\_]+[a-zA-Z0-9]+[\w\.\-]+[a-zA-Z]{2,3}$"
         return True if re.match(reg, email) else False
 
 
@@ -43,16 +42,12 @@ def valid_password(password: str):
 
 def valid_login_inputs(name_email: str, password: str):
     """Regex Formula for User's Username or Email"""
-    if __sanitizer(name_email) and __sanitizer(password):
-        return True
-    return False
+    return True if __sanitizer(name_email) and __sanitizer(password) else False
 
 
 def valid_msg_inputs(string: str):
     """Regex Formula for User's Username or Email"""
-    if __sanitizer(string):
-        return True
-    return False
+    return True if __sanitizer(string) else False
 
 
 def __sanitizer(msg: str):
@@ -64,28 +59,8 @@ def __sanitizer(msg: str):
     reg = r"^([^\'\<\{]+[\w\!\@\#\$\%\^\&\*\-\=\+\_\'\<\>\{\}\(\)\[\]\:\;\\\/\|\~\`\ ]+[^\'\>\}])$"
     if not re.match(reg, msg):
         LogModel(None,
-                 f"sanitzizor: {msg} ",
+                 f"sanitizer: {msg} ",
                  'H').save_to_db()
         return False
     else:
         return True
-
-    #
-# def item_name_regex(string: str):
-#     """Regex Formula Item Name
-#     accepted only alphanumeric
-#     dont start with digit
-#     dont finish with '_'
-#     length 3-12
-#     """
-#     reg = r"^[^\d]+[\w]+[^\_]{2,12}$"
-#     return re.match(reg, string)
-#
-# def store_name_regex(string: str):
-#     """Regex Formula Store Name
-#     accepted a-z A-Z 0-9
-#     dont start with digit
-#     length 4-12
-#     """
-#     reg = r"^[^\d]+[A-Za-z0-9]{3,12}$"
-#     return re.match(reg, string)

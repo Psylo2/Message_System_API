@@ -9,7 +9,7 @@ from db.database import db
 from libs.blacklist import BLACKLIST
 from resources.user import (UserRegister, UserLogin,
                             UserLogout, TokenRefresh,
-                            UserForgetPassword)
+                            UserForgetPassword, UserDelete)
 from resources.admin import (AdminUsersList, AdminWatchLogs,
                              AdminSearchByLogId, AdminSearchByThreat,
                              AdminSearchUserThreat, AdminSearchByUserId)
@@ -49,6 +49,7 @@ api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogout, '/logout')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(UserForgetPassword, '/forgot_password')
+api.add_resource(UserDelete, '/delete')
 
 # resources.admin
 api.add_resource(AdminUsersList, '/admin_users_list')

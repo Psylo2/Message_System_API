@@ -196,3 +196,19 @@ class UserForgetPassword(Resource):
                 return {'message': gettext("admin_password")}, 201
         else:
             return {'message': gettext("invalid_credentials")}, 400
+
+class UserDelete(Resource):
+    @classmethod
+    @jwt_required
+    def post(cls):
+        """Logout:    [*] User must possess Access Token
+                      [*] Take user uuid token identity
+                      [*] Insert to Black list for revoke Token"""
+        user = UserModel.find_by_id(get_jwt_identity())
+        jti = get_raw_jwt()["jti"]
+        BLACKLIST.add(jti)
+        user.delete_from_db()
+        LogModel(get_jwt_identity(),
+                 f'User Token have been Revoked Successfully',
+                 'L').save_to_db()
+        return {"message": gettext("user_logout")}, 200

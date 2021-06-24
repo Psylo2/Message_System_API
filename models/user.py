@@ -13,6 +13,7 @@ class UserModel(db.Model):
     password = db.Column(db.LargeBinary, nullable=False)
     create_at = db.Column(db.Float, nullable=True)
     last_login = db.Column(db.Float, nullable=True)
+    active = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, name: str, email: str, password):
         self.name = name
@@ -26,28 +27,30 @@ class UserModel(db.Model):
 
     def save_to_db(self) -> None:
         """Save user to DB"""
+        self.active = True
         db.session.add(self)
         db.session.commit()
 
     def delete_from_db(self) -> None:
         """Delete user from DB"""
+        self.active = False
         db.session.delete(self)
         db.session.commit()
 
     @classmethod
     def find_by_id(cls, idx: int) -> "UserModel":
         """Find user by idx"""
-        return cls.query.filter_by(idx=idx).first()
+        return cls.query.filter_by(idx=idx, active=True).first()
 
     @classmethod
     def find_by_username(cls, name: str) -> "UserModel":
         """Find user by name"""
-        return cls.query.filter_by(name=name).first()
+        return cls.query.filter_by(name=name, active=True).first()
 
     @classmethod
     def find_by_email(cls, email: str) -> "UserModel":
         """Find user by email, Because email encrypted, decrypt"""
-        x = cls.query.with_entities(UserModel.email, UserModel.idx).all()
+        x = cls.query.with_entities(UserModel.email, UserModel.idx, UserModel.active == True).all()
         for em in x:
             if cls.decrypt(UserModel, email, em[0]):
                 return cls.find_by_id(em[1])

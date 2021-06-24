@@ -13,6 +13,7 @@ from resources.user import (UserRegister, UserLogin,
 from resources.admin import (AdminUsersList, AdminWatchLogs,
                              AdminSearchByLogId, AdminSearchByThreat,
                              AdminSearchUserThreat, AdminSearchByUserId)
+
 from resources.message import (MessageSend, MessageRead, MessageAllUnread,
                                MessageAllRead, MessageAllReceived,
                                MessageAllSent, MessageReadByRec)
@@ -21,8 +22,6 @@ app = Flask(__name__)
 
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
-
-db.init_app(app)
 
 api = Api(app)
 

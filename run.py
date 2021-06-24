@@ -11,13 +11,16 @@ from models.user import UserModel
 
 db.init_app(app)
 
+
 def __admin_priv():
     """Grant admin privileges on create app"""
-    admin = UserModel(name=os.environ.get('ADMIN_NAME'),
-                      email=os.environ.get('ADMIN_EMAIL'),
-                      password=os.environ.get('ADMIN_PASSWORD'))
-    admin.create_at = insert_timestamp()
-    admin.save_to_db()
+    admin = UserModel.find_by_username(name=os.environ.get('ADMIN_NAME'))
+    if admin is None:
+        admin = UserModel(name=os.environ.get('ADMIN_NAME'),
+                          email=os.environ.get('ADMIN_EMAIL'),
+                          password=os.environ.get('ADMIN_PASSWORD'))
+        admin.create_at = insert_timestamp()
+        admin.save_to_db()
 
 @app.before_first_request
 def create_tables():

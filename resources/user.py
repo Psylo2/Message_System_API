@@ -207,8 +207,9 @@ class UserDelete(Resource):
         user = UserModel.find_by_id(get_jwt_identity())
         jti = get_raw_jwt()["jti"]
         BLACKLIST.add(jti)
-        user.delete_from_db()
-        LogModel(get_jwt_identity(),
-                 f'User Token have been Revoked Successfully',
+        LogModel(user.idx,
+                 f"User been Deleted and token been revoked",
                  'L').save_to_db()
+        user.delete_from_db()
+
         return {"message": gettext("user_logout")}, 200

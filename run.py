@@ -2,7 +2,7 @@ import os
 
 from app import app, repository
 from repository.user_repository import UserRepository
-from models.user import UserModel
+from models.user_model import UserModel
 
 repository.db.init_app(app)
 

@@ -46,17 +46,17 @@ def valid_login_inputs(name_email: str, password: str):
 
 
 def valid_msg_inputs(string: str):
-    """Regex Formula for User's Username or Email"""
+    """Regex Formula for String"""
     return True if __sanitizer(string) else False
 
 
 def __sanitizer(msg: str):
     """REGEX Formula for Message control.
-    dont start with '<{
-    dont end with '>}
+    dont start with '< {
+    dont end with '> }
     no less then 3 character
     """
-    reg = r"^([^\'\<\{]+[\w\!\@\#\$\%\^\&\*\-\=\+\_\'\<\>\{\}\(\)\[\]\:\;\\\/\|\~\`\ ]+[^\'\>\}])$"
+    reg = r"^([^\'\<\{\ \-\"]+[\w\!\@\#\$\%\^\&\*\-\=\+\_\'\<\>\{\}\(\)\[\]\:\;\\\/\|\~\`\ ]+[^\'\>\}\ \-])$"
     if not re.match(reg, msg):
         LogModel(None,
                  f"sanitizer: {msg} ",

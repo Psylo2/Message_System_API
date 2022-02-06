@@ -1,7 +1,7 @@
 # Message System API
 
 Messaging System API
-build with Python, Flask, Flask-RESTful,
+build with Flask, Flask-RESTful, Pydantic,
 Flask-JWT-Extended & Flask-SQLAlchemy
 
 Deployed over Heroku
@@ -78,8 +78,8 @@ endpoint: /forgot_password
 
 ````
 {
-    "name": {{user_name}},
-    "email": {{user_email}},
+    "name": "user_name",
+    "email": "user_email",
     "new_password": "AAaa1111@!",
     "re-password": "AAaa1111@!"
 }
@@ -168,7 +168,6 @@ endpoint: `\admin_users_list`
 - Search a Log by ID
 - Search Log by threat level
 - search all Logs of a user by user ID
-- search all Logs of a user and threat level
 
 
 ### Display All Logs**
@@ -204,13 +203,3 @@ __POST__
 
 
 endpoint: `/logs/user=<int:user_id>`
-
-
-### Search by User & Threat Level**
-
-_[__Admin only__] Display all logs by user id and threat level ['H', 'M', 'L']_
-
-__POST__
-
-endpoint: `/logs/id=<int:user_id>&level=<string:lvl>`
-

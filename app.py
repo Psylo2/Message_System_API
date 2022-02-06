@@ -5,18 +5,17 @@ from dotenv import load_dotenv
 
 load_dotenv(".env", verbose=True)
 
-from db.database import db
-from libs.blacklist import BLACKLIST
-from resources.user import (UserRegister, UserLogin,
-                            UserLogout, TokenRefresh,
-                            UserForgetPassword, UserDelete)
-from resources.admin import (AdminUsersList, AdminWatchLogs,
-                             AdminSearchByLogId, AdminSearchByThreat,
-                             AdminSearchUserThreat, AdminSearchByUserId)
+from manager import RepositoryManager, JWTConfigurationManager
 
-from resources.message import (MessageSend, MessageRead, MessageAllUnread,
-                               MessageAllRead, MessageAllReceived,
-                               MessageAllSent, MessageReadByRec)
+repository = RepositoryManager()
+
+from factory import Factory
+from application.handlers import UserHandler, MessageHandler, LogHandler, AdminHandler
+from resources.user_resource import (UserRegister, UserLogin, UserLogout, TokenRefresh, UserForgetPassword, UserDelete)
+from resources.admin_resource import (AdminUsersList, AdminWatchLogs, AdminSearchByLogId, AdminSearchByThreat,
+                                      AdminSearchByUserId)
+from resources.message_resource import (MessageSend, MessageRead, MessageAllUnread, MessageAllRead, MessageAllReceived,
+                                        MessageAllSent, MessageReadByRec)
 
 app = Flask(__name__)
 
@@ -26,48 +25,56 @@ app.config.from_envvar("APPLICATION_SETTINGS")
 api = Api(app)
 
 jwt = JWTManager(app)
+JWTConfigurationManager(jwt=jwt)
 
-
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    """Check if JWT Token is in BlackList"""
-    return decrypted_token["jti"] in BLACKLIST
-
-
-@jwt.user_claims_loader
-def add_claims_to_jwt(identity):
-    """Check if identity is Admin
-    for ADMIN privileges"""
-    if identity == 1:
-        return {'is_admin': True}
-    return {'is_admin': False}
-
+factory = Factory()
+log_handler = LogHandler(factory=factory)
+user_handler = UserHandler(factory=factory, log_handler=log_handler, repository=repository)
+message_handler = MessageHandler(factory=factory, log_handler=log_handler)
+_admin_handler = AdminHandler(factory=factory, log_handler=log_handler)
 
 # resources.user
-api.add_resource(UserRegister, '/register')
-api.add_resource(UserLogin, '/login')
-api.add_resource(UserLogout, '/logout')
-api.add_resource(TokenRefresh, '/refresh')
-api.add_resource(UserForgetPassword, '/forgot_password')
-api.add_resource(UserDelete, '/delete')
-
-# resources.admin
-api.add_resource(AdminUsersList, '/admin_users_list')
-api.add_resource(AdminWatchLogs, '/logs/all')
-api.add_resource(AdminSearchByLogId, '/logs/id=<int:log_id>')
-api.add_resource(AdminSearchByThreat, '/logs/level=<string:lvl>')
-api.add_resource(AdminSearchUserThreat, '/logs/id=<int:user_id>&level=<string:lvl>')
-api.add_resource(AdminSearchByUserId, '/logs/user=<int:user_id>')
+api.add_resource(UserRegister, '/register',
+                 resource_class_kwargs={"handler": user_handler})
+api.add_resource(UserLogin, '/login',
+                 resource_class_kwargs={"handler": user_handler})
+api.add_resource(UserLogout, '/logout',
+                 resource_class_kwargs={"handler": user_handler})
+api.add_resource(TokenRefresh, '/refresh',
+                 resource_class_kwargs={"handler": user_handler})
+api.add_resource(UserForgetPassword, '/forgot_password',
+                 resource_class_kwargs={"handler": user_handler})
+api.add_resource(UserDelete, '/delete',
+                 resource_class_kwargs={"handler": user_handler})
 
 # resources.message
-api.add_resource(MessageSend, '/msg/send')
-api.add_resource(MessageRead, '/msg/id=<int:msg_id>')
-api.add_resource(MessageAllUnread, '/msg/all_unread')
-api.add_resource(MessageAllRead, '/msg/all_read')
-api.add_resource(MessageAllReceived, '/msg/all_received')
-api.add_resource(MessageAllSent, '/msg/all_sent')
-api.add_resource(MessageReadByRec, '/msg/all_receivers_read')
+api.add_resource(MessageSend, '/msg/send',
+                 resource_class_kwargs={"handler": message_handler})
+api.add_resource(MessageRead, '/msg/id=<int:msg_id>',
+                 resource_class_kwargs={"handler": message_handler})
+api.add_resource(MessageAllUnread, '/msg/all_unread',
+                 resource_class_kwargs={"handler": message_handler})
+api.add_resource(MessageAllRead, '/msg/all_read',
+                 resource_class_kwargs={"handler": message_handler})
+api.add_resource(MessageAllReceived, '/msg/all_received',
+                 resource_class_kwargs={"handler": message_handler})
+api.add_resource(MessageAllSent, '/msg/all_sent',
+                 resource_class_kwargs={"handler": message_handler})
+api.add_resource(MessageReadByRec, '/msg/all_receivers_read',
+                 resource_class_kwargs={"handler": message_handler})
+
+# resources.admin
+api.add_resource(AdminUsersList, '/admin_users_list',
+                 resource_class_kwargs={"handler": _admin_handler})
+api.add_resource(AdminWatchLogs, '/logs/all',
+                 resource_class_kwargs={"handler": _admin_handler})
+api.add_resource(AdminSearchByLogId, '/logs/id=<int:log_id>',
+                 resource_class_kwargs={"handler": _admin_handler})
+api.add_resource(AdminSearchByThreat, '/logs/level=<string:lvl>',
+                 resource_class_kwargs={"handler": _admin_handler})
+api.add_resource(AdminSearchByUserId, '/logs/user=<int:user_id>',
+                 resource_class_kwargs={"handler": _admin_handler})
 
 if __name__ == '__main__':
-    db.init_app(app)
+    repository.db.init_app(app)
     app.run(port=5000)

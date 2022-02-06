@@ -1,29 +1,23 @@
-""""This file is made in order to:
-    [*] Not importing DB
-    [*] Not recreate DB
-    [*] Save Admin identity
-when we running the App"""
 import os
 
-from db.database import db, insert_timestamp
-from app import app
+from app import app, repository
+from repository.user_repository import UserRepository
 from models.user import UserModel
 
-db.init_app(app)
+repository.db.init_app(app)
 
-
-def __admin_priv():
+def __admin_privileges():
     """Grant admin privileges on create app"""
-    admin = UserModel.find_by_username(name=os.environ.get('ADMIN_NAME'))
-    if admin is None:
+    admin = UserRepository().find_by_username(name=os.environ.get('ADMIN_NAME'))
+    if not admin:
         admin = UserModel(name=os.environ.get('ADMIN_NAME'),
                           email=os.environ.get('ADMIN_EMAIL'),
                           password=os.environ.get('ADMIN_PASSWORD'))
-        admin.create_at = insert_timestamp()
-        admin.save_to_db()
+        admin.create_at = repository.insert_timestamp()
+        UserRepository().save_to_db(user_data=admin.dict())
 
 @app.before_first_request
 def create_tables():
     """Create tables and save Admin identity"""
-    db.create_all()
-    __admin_priv()
+    repository.db.create_all()
+    __admin_privileges()

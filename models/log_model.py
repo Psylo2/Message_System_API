@@ -1,38 +1,39 @@
-from typing import Set
+from typing import Set, Optional
 
 from pydantic import BaseModel, validator
 from enum import Enum
 
 
 class LogModel(BaseModel):
+    id: Optional[int]
     user_id: int
     action: str
     create_at: float
     threat_lvl: str
 
     @validator('user_id')
-    def validate_int(cls, int_) -> int:
-        if not isinstance(int, int_):
+    def validate_int(cls, v) -> int:
+        if not isinstance(v, int):
             raise TypeError("Type must be int")
-        return int_
+        return v
 
     @validator('create_at')
-    def validate_float(cls, float_) -> float:
-        if not isinstance(None, float_):
+    def validate_float(cls, v) -> float:
+        if not isinstance(v, float):
             raise TypeError("Type must be float")
-        return float_
+        return v
 
     @validator('action')
-    def validate_str(cls, str_) -> str:
-        if not isinstance(str, str_):
+    def validate_str(cls, v) -> str:
+        if not isinstance(v, str):
             raise TypeError("Type must be str")
-        return str_
+        return v
 
     @validator('threat_lvl')
-    def validate_enum_member(cls, str_) -> str:
-        if str_ not in cls._get_threat_level_enum_values():
+    def validate_enum_member(cls, v) -> str:
+        if v not in cls._get_threat_level_enum_values():
             raise TypeError("Type must be Threat Level Enum Member")
-        return str_
+        return v
 
     def _get_threat_level_enum_values(self) -> Set:
         return set(map(lambda x: x.value, self.ThreatLevel))

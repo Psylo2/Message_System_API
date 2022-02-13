@@ -17,39 +17,39 @@ class MessageRepositoryService(ABC):
         ...
 
     @abstractmethod
-    def find_msg_by_id(self, idx: int) -> "MessageSchema":
+    def find_msg_by_id(self, id: int) -> "MessageSchema":
         ...
 
     @abstractmethod
-    def find_all_received(self, idx: int) -> List["MessageSchema"]:
+    def find_all_received(self, id: int) -> List["MessageSchema"]:
         ...
 
     @abstractmethod
-    def find_all_sent(self, idx: int) -> List["MessageSchema"]:
+    def find_all_sent(self, id: int) -> List["MessageSchema"]:
         """return all delivered msg of a user, order by newest message"""
         ...
 
     @abstractmethod
-    def find_all_unread(self, idx: int) -> List["MessageSchema"]:
+    def find_all_unread(self, id: int) -> List["MessageSchema"]:
         """return all unread messages of a user, order by newest message"""
         ...
 
     @abstractmethod
-    def find_all_read(self, idx: int) -> List["MessageSchema"]:
+    def find_all_read(self, id: int) -> List["MessageSchema"]:
         """return all read messages of a user, order by newest message"""
         ...
 
     @abstractmethod
-    def find_sent_n_read(self) -> List["MessageSchema"]:
+    def find_sent_n_read(self, id: int) -> List["MessageSchema"]:
         """return all delivered messages of a user that have been marked READ """
         ...
 
     @abstractmethod
-    def _update_read_status(self, idx: int) -> None:
+    def _update_read_status(self, id: int) -> None:
         """UPDATE a msg to READ status """
         ...
 
     @abstractmethod
-    def generate_message_hush_key(self, user_send: int, user_receive: int, message_title: str, message_body: str,
+    def generate_message_hash_key(self, user_send: int, user_receive: int, message_title: str, message_body: str,
                                   created_date: float) -> str:
         ...

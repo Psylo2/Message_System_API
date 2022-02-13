@@ -3,15 +3,11 @@ from abc import ABC, abstractmethod
 class RepositoryService(ABC):
 
     @abstractmethod
-    def db(self):
-        ...
-
-    @abstractmethod
     def encrypt(self, string: str) -> bytes:
         ...
 
     @abstractmethod
-    def decrypt(self, x: bytes, y: bytes) -> bool:
+    def decrypt(self, x: str, y: bytes) -> bool:
         ...
 
     @abstractmethod

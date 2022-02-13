@@ -1,3 +1,4 @@
+from repository.services.repository_service import RepositoryService
 from repository.services.user_repository_service import UserRepositoryService
 from repository.services.message_repository_service import MessageRepositoryService
 from repository.services.log_repository_service import LogRepositoryService

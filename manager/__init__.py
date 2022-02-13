@@ -1,2 +1,3 @@
 from manager.repository_manager import RepositoryManager
 from manager.jwt_configuration_manager import JWTConfigurationManager
+from manager.fields_validation_manager import FieldsValidation

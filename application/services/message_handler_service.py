@@ -9,7 +9,7 @@ class MessageHandlerService(ABC):
         ...
 
     @abstractmethod
-    def _send_message(self, user_send: int, user_receive: "UserSchema", message_data: Dict) -> None:
+    def _send_message(self, user_send: int, user_receive: "UserRepository", message_data: Dict) -> None:
         ...
 
     @abstractmethod
@@ -17,7 +17,7 @@ class MessageHandlerService(ABC):
         ...
 
     @abstractmethod
-    def _aggregate_message(self, user_send: int, user_receive: "UserSchema", message_data: Dict) -> Dict:
+    def _aggregate_message(self, user_send: int, user_receive: "UserRepository", message_data: Dict) -> Dict:
         ...
 
     @abstractmethod
@@ -29,7 +29,7 @@ class MessageHandlerService(ABC):
         ...
 
     @abstractmethod
-    def _convert_message_to_dict(self, message: "MessageSchema") -> Dict:
+    def _convert_message_to_dict(self, message: "MessageRepository") -> Dict:
         ...
 
     @abstractmethod
@@ -37,5 +37,9 @@ class MessageHandlerService(ABC):
         ...
 
     @abstractmethod
-    def _compare_hush_keys(self, message) -> bool:
+    def _compare_hash_keys(self, message) -> bool:
+        ...
+
+    @abstractmethod
+    def _return_message(self, message: "MessageRepository", update_read_status: bool) -> Dict:
         ...

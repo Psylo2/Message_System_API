@@ -3,6 +3,7 @@ from pydantic import BaseModel, validator
 
 
 class MessageModel(BaseModel):
+    id: Optional[int]
     from_user: int
     to_user: int
     msg_title: str
@@ -13,22 +14,22 @@ class MessageModel(BaseModel):
     hash: str
 
     @validator('from_user', 'to_user')
-    def validate_int(cls, int_) -> int:
-        if not isinstance(int, int_):
+    def validate_int(cls, v) -> int:
+        if not isinstance(v, int):
             raise TypeError("Type must be int")
-        return int_
+        return v
 
     @validator('read_status')
-    def validate_bool(cls, bool_) -> bool:
-        if not isinstance(bool, bool_):
+    def validate_bool(cls, v) -> bool:
+        if not isinstance(v, bool):
             raise TypeError("Type must be float")
-        return bool_
+        return v
 
     @validator('msg_title', 'msg_body', 'hash')
-    def validate_str(cls, str_) -> str:
-        if not isinstance(str, str_):
+    def validate_str(cls, v) -> str:
+        if not isinstance(v, str):
             raise TypeError("Type must be str")
-        return str_
+        return v
 
 
 

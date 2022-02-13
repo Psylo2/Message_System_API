@@ -1,21 +1,19 @@
-from flask import Flask
-from flask_restful import Api
-from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
 load_dotenv(".env", verbose=True)
 
-from manager import RepositoryManager, JWTConfigurationManager
+from flask import Flask
+from flask_restful import Api
+from flask_jwt_extended import JWTManager
 
-repository = RepositoryManager()
+from repository.repository import repository
+from manager.jwt_configuration_manager import JWTConfigurationManager
 
 from factory import Factory
-from application.handlers import UserHandler, MessageHandler, LogHandler, AdminHandler
-from resources.user_resource import (UserRegister, UserLogin, UserLogout, TokenRefresh, UserForgetPassword, UserDelete)
-from resources.admin_resource import (AdminUsersList, AdminWatchLogs, AdminSearchByLogId, AdminSearchByThreat,
-                                      AdminSearchByUserId)
-from resources.message_resource import (MessageSend, MessageRead, MessageAllUnread, MessageAllRead, MessageAllReceived,
-                                        MessageAllSent, MessageReadByRec)
+from application.handlers import *
+from resources.user_resource import *
+from resources.admin_resource import *
+from resources.message_resource import *
 
 app = Flask(__name__)
 
@@ -28,10 +26,12 @@ jwt = JWTManager(app)
 JWTConfigurationManager(jwt=jwt)
 
 factory = Factory()
+
+# handlers
 log_handler = LogHandler(factory=factory)
-user_handler = UserHandler(factory=factory, log_handler=log_handler, repository=repository)
+user_handler = UserHandler(factory=factory, log_handler=log_handler)
 message_handler = MessageHandler(factory=factory, log_handler=log_handler)
-_admin_handler = AdminHandler(factory=factory, log_handler=log_handler)
+admin_handler = AdminHandler(factory=factory, log_handler=log_handler)
 
 # resources.user
 api.add_resource(UserRegister, '/register',
@@ -65,16 +65,16 @@ api.add_resource(MessageReadByRec, '/msg/all_receivers_read',
 
 # resources.admin
 api.add_resource(AdminUsersList, '/admin_users_list',
-                 resource_class_kwargs={"handler": _admin_handler})
+                 resource_class_kwargs={"handler": admin_handler})
 api.add_resource(AdminWatchLogs, '/logs/all',
-                 resource_class_kwargs={"handler": _admin_handler})
+                 resource_class_kwargs={"handler": admin_handler})
 api.add_resource(AdminSearchByLogId, '/logs/id=<int:log_id>',
-                 resource_class_kwargs={"handler": _admin_handler})
+                 resource_class_kwargs={"handler": admin_handler})
 api.add_resource(AdminSearchByThreat, '/logs/level=<string:lvl>',
-                 resource_class_kwargs={"handler": _admin_handler})
+                 resource_class_kwargs={"handler": admin_handler})
 api.add_resource(AdminSearchByUserId, '/logs/user=<int:user_id>',
-                 resource_class_kwargs={"handler": _admin_handler})
+                 resource_class_kwargs={"handler": admin_handler})
 
 if __name__ == '__main__':
-    repository.db.init_app(app)
+    repository.init_app(app)
     app.run(port=5000)

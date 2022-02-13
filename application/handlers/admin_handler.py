@@ -2,7 +2,7 @@ from typing import Dict, Tuple, List
 
 from usecases import AdminUseCase
 from application.services import AdminHandlerService
-from models import UserModel
+
 
 class AdminHandler(AdminUseCase, AdminHandlerService):
     def __init__(self, factory, log_handler):
@@ -12,51 +12,51 @@ class AdminHandler(AdminUseCase, AdminHandlerService):
 
     def get_users_list(self, jwt_claims: Dict, admin_id: int) -> Tuple:
         if not self._is_admin(jwt_claims=jwt_claims):
-            self._log_handler.add_high_priority_log(_id=admin_id,
+            self._log_handler.add_high_priority_log(id=admin_id,
                                                     msg=f"User Id: {admin_id} have tried to access Users List")
             return {"message": gettext("admin_privilege")}, 401
 
-        self._log_handler.add_high_priority_log(_id=admin_id, msg="Admin access to All Users List")
+        self._log_handler.add_high_priority_log(id=admin_id, msg="Admin access to All Users List")
         return self._get_all_users_list(), 200
 
     def get_all_logs(self, jwt_claims: Dict, admin_id: int) -> Tuple:
         if not self._is_admin(jwt_claims=jwt_claims):
-            self._log_handler.add_high_priority_log(_id=admin_id,
+            self._log_handler.add_high_priority_log(id=admin_id,
                                                     msg=f"User Id: {admin_id} have tried to access Users List")
             return {"message": gettext("admin_privilege")}, 401
 
-        self._log_handler.add_high_priority_log(_id=admin_id, msg="Admin access to All Users List")
+        self._log_handler.add_high_priority_log(id=admin_id, msg="Admin access to All Users List")
         return self._get_all_logs_list(), 200
 
     def get_log_by_id(self, jwt_claims: Dict, admin_id: int, log_id: int) -> Tuple:
         if not self._is_admin(jwt_claims=jwt_claims):
-            self._log_handler.add_high_priority_log(_id=admin_id,
+            self._log_handler.add_high_priority_log(id=admin_id,
                                                     msg=f"User Id: {admin_id} have tried to access Users List")
             return {"message": gettext("admin_privilege")}, 401
 
-        self._log_handler.add_high_priority_log(_id=admin_id, msg=f"Admin access to Log ID: {log_id}")
+        self._log_handler.add_high_priority_log(id=admin_id, msg=f"Admin access to Log ID: {log_id}")
         return self._get_log_by_id(log_id=log_id), 200
 
     def get_all_threats_by_level(self, jwt_claims: Dict, admin_id: int, threat_lvl: str) -> Tuple:
         if not self._is_admin(jwt_claims=jwt_claims):
-            self._log_handler.add_high_priority_log(_id=admin_id,
+            self._log_handler.add_high_priority_log(id=admin_id,
                                                     msg=f"User Id: {admin_id} have tried to access Users List")
             return {"message": gettext("admin_privilege")}, 401
 
-        self._log_handler.add_high_priority_log(_id=admin_id, msg=f"Admin access to All Threat Log Level: {threat_lvl}")
+        self._log_handler.add_high_priority_log(id=admin_id, msg=f"Admin access to All Threat Log Level: {threat_lvl}")
         return self._get_all_logs_by_threats_level(threat_lvl=threat_lvl), 200
 
     def get_all_user_log(self, jwt_claims: Dict, admin_id: int, user_id: int) -> Tuple:
         if not self._is_admin(jwt_claims=jwt_claims):
-            self._log_handler.add_high_priority_log(_id=admin_id,
+            self._log_handler.add_high_priority_log(id=admin_id,
                                                     msg=f"User Id: {admin_id} have tried to access Users List")
             return {"message": gettext("admin_privilege")}, 401
 
-        self._log_handler.add_high_priority_log(_id=admin_id, msg=f"Admin access to All Threat Log Level: {threat_lvl}")
+        self._log_handler.add_high_priority_log(id=admin_id, msg=f"Admin access to All Threat Log Level: {threat_lvl}")
         return self._get_user_logs(user_id=user_id), 200
 
     def _get_user_logs(self, user_id: int) -> List:
-        all_user_logs_list = self._log_repository.find_user_logs(idx=user_id)
+        all_user_logs_list = self._log_repository.find_user_logs(id=user_id)
         return [self._aggregate_log(log=log) for log in all_user_logs_list]
 
     def _get_all_logs_by_threats_level(self, threat_lvl: str) -> List[Dict]:
@@ -64,16 +64,16 @@ class AdminHandler(AdminUseCase, AdminHandlerService):
         return [self._aggregate_log(log=log) for log in all_logs_by_threat]
 
     def _get_log_by_id(self, log_id: int) -> Dict:
-        log = self._log_repository.find_by_log_id(idx=log_id)
+        log = self._log_repository.find_by_log_id(id=log_id)
         return self._aggregate_log(log=log)
 
     def _get_all_logs_list(self) -> List[Dict]:
         all_logs_raw_list = self._log_repository.find_all_logs()
         return [self._aggregate_log(log=log) for log in all_logs_raw_list]
 
-    def _aggregate_log(self, log: "LogSchema") -> Dict:
-        create_at = self._log_repository.convert_timestamp(user.create_at)
-        return {log.idx: {"create_at": create_at,
+    def _aggregate_log(self, log: "LogRepository") -> Dict:
+        create_at = self._log_repository.convert_timestamp(log.create_at)
+        return {log.id: {"create_at": create_at,
                           "user_id": log.user_id,
                           "action": log.action,
                           "threat_lvl": log.threat_lvl}}
@@ -84,8 +84,8 @@ class AdminHandler(AdminUseCase, AdminHandlerService):
 
     def _aggregate_user(self, user: "UserSchema") -> Dict:
         create_at = self._user_repository.convert_timestamp(user.create_at)
-        return {user.idx: {"name": user.name,
-                           "create_at": create_at}}
+        return {user.id: {"name": user.name,
+                          "create_at": create_at}}
 
     def _is_admin(self, jwt_claims: Dict) -> bool:
         if not jwt_claims['is_admin']:

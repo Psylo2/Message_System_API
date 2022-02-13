@@ -8,13 +8,12 @@ from usecases import UserUseCase
 from application.services import UserHandlerService
 from models import UserModel
 from libs.blacklist import BLACKLIST
-from libs.inputs_validation import valid_email, valid_username, valid_password, valid_login_inputs
 
 
 class UserHandler(UserUseCase, UserHandlerService):
-    def __init__(self, factory, repository, log_handler):
-        self._decrypt_repository = repository.decrypt
-        self._user_repository = factory.get_user_repository
+    def __init__(self, factory, log_handler):
+        self._user_repository = factory.get_user_repository()
+        self._field_validation = factory.get_field_validation()
         self._log_handler = log_handler
 
     def user_register(self, user_data: Dict) -> Tuple:
@@ -43,25 +42,26 @@ class UserHandler(UserUseCase, UserHandlerService):
 
     def user_logout(self) -> Tuple:
         self._insert_token_to_blacklist()
-        self._log_handler.add_low_priority_log(_id=get_jwt_identity(), msg="User Registered Successfully")
+        self._log_handler.add_low_priority_log(id=get_jwt_identity(), msg="User Registered Successfully")
         return {"message": gettext("user_logout")}, 200
 
     def user_refresh_token(self) -> Tuple:
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
-        self._log_handler.add_high_priority_log(_id=get_jwt_identity(), msg="User has Refreshed an Access Token")
+        self._log_handler.add_high_priority_log(id=get_jwt_identity(), msg="User has Refreshed an Access Token")
         return {"access_token": new_token}, 200
 
     def user_forgot_password(self, user_data: Dict) -> Tuple:
         if not self._is_valid_input(user_data=user_data):
             return {'message': "Credentials error"}, 401
 
-        user_name, user_email = self._get_user_name_and_email(name=data['username'],
-                                                              email=data['email'])
+        user_by_name, user_by_email = self._get_user_name_and_email(name=data['username'],
+                                                                    email=data['email'])
 
-        if self._is_eligible_data(user_name=user_name, user_email=user_email,
+        if self._is_eligible_data(user_name=user_by_name, user_email=user_by_email,
                                   new_password=data['new_password'], re_password=data['re_password']):
-            password_attempt, status_code = self._attempt_change_password(user=user, new_password=data['password'])
+            password_attempt, status_code = self._attempt_change_password(user=user_by_name,
+                                                                          new_password=data['password'])
             return password_attempt, status_code
         else:
             return {'message': gettext("invalid_credentials")}, 400
@@ -69,29 +69,31 @@ class UserHandler(UserUseCase, UserHandlerService):
     def user_delete(self) -> Tuple:
         user = self._get_user_by_id(user_id=get_jwt_identity())
         self._insert_token_to_blacklist()
-        self._log_handler.add_high_priority_log(_id=user.idx,
+        self._log_handler.add_high_priority_log(id=user.id,
                                                 msg="User been Deleted and token been revoked")
         self._user_repository.delete_from_repository(user_data=user)
 
         return {"message": gettext("user_logout")}, 200
 
     def _attempt_change_password(self, user, new_password) -> Tuple:
-        is_user_admin = user.idx == 1
+        is_user_admin = user.id == 1
 
         if is_user_admin:
-            self._log_handler.add_high_priority_log(_id=user.idx,
+            self._log_handler.add_high_priority_log(id=user.id,
                                                     msg="ADMIN CANNOT CHANGE PASSWORD")
             return {'message': gettext("admin_password")}, 201
 
-        self.factory.get_user_repository._update_password(new_password)
-        self._log_handler.add_high_priority_log(_id=user.idx,
-                                                msg=f"User [{user.idx}] has Changed Password successfully")
+        user = self._user_repository.find_by_username(user)
+        user.password = new_password
+        self._user_repository._update_password(user=user)
+        self._log_handler.add_high_priority_log(id=user.id,
+                                                msg=f"User [{user.id}] has Changed Password successfully")
         return {'message': gettext("password_changed")}, 201
 
     def _is_valid_input(self, user_data: Dict) -> bool:
-        is_valid_username = valid_username(user_data.get('username'))
-        is_valid_email = valid_email(user_data.get('email'))
-        is_valid_password = valid_password(user_data.get('password'))
+        is_valid_username = self._field_validation.is_valid_username(user_data.get('username'))
+        is_valid_email = self._field_validation.is_valid_email(user_data.get('email'))
+        is_valid_password = self._field_validation.is_valid_password(user_data.get('password'))
 
         return is_valid_username and is_valid_email and is_valid_password
 
@@ -100,7 +102,7 @@ class UserHandler(UserUseCase, UserHandlerService):
             return True
         return False
 
-    def _get_user_from_repository(self, user_data: str) -> "UserModel":
+    def _get_user_from_repository(self, user_data: str) -> "UserRepository":
         user = self._user_repository.find_by_username(user_data)
         if not user:
             user = self._user_repository.find_by_email(user_data)
@@ -111,22 +113,22 @@ class UserHandler(UserUseCase, UserHandlerService):
         email = self._user_repository.find_by_email(email)
         return name, email
 
-    def _get_user_by_id(self, user_id) -> "UserSchema":
+    def _get_user_by_id(self, user_id) -> "UserRepository":
         return self._user_repository.find_by_id(user_id)
 
-    def _save_user(self, user: UserModel) -> 'UserSchema':
-        user = self.factory.get_user_repository.save_to_repository(user_data=user.dict())
-        self._log_handler.add_low_priority_log(_id=user.idx, msg="User Registered Successfully")
+    def _save_user(self, user: UserModel) -> 'UserRepository':
+        user = self._user_repository.save_to_repository(user_data=user.dict())
+        self._log_handler.add_low_priority_log(id=user.id, msg="User Registered Successfully")
         return user
 
     def _attempt_login(self, user, password: str) -> Tuple:
         if not self._decrypt_repository(password, user.password):
             return {"message": gettext("invalid_credentials")}, 401
 
-        user.last_login = insert_timestamp()
+        user.last_login = self._user_repository.insert_timestamp()
         user_schema = self._save_user(user=user)
-        tokens_payload = self._get_tokens(user_id=user_schema.idx)
-        self._log_handler.add_low_priority_log(_id=user_schema.idx,
+        tokens_payload = self._get_tokens(user_id=user_schema.id)
+        self._log_handler.add_low_priority_log(id=user_schema.id,
                                                msg="User Logged in Successfully")
         return tokens_payload, 200
 
@@ -136,7 +138,7 @@ class UserHandler(UserUseCase, UserHandlerService):
 
     def _get_tokens(self, user_id: int) -> Dict:
         access_token = create_access_token(identity=user_id, fresh=True)
-        refresh_token = create_refresh_token(user_schema.user_id)
+        refresh_token = create_refresh_token(identity=user_id)
         return {"access_token": access_token, "refresh_token": refresh_token}
 
     def _insert_token_to_blacklist(self) -> None:

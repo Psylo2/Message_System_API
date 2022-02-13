@@ -3,6 +3,7 @@ from typing import Optional, Union
 
 
 class UserModel(BaseModel):
+    id: Optional[int]
     name: str
     email: bytes
     password: bytes
@@ -11,19 +12,19 @@ class UserModel(BaseModel):
     active:  bool = False
 
     @validator('name')
-    def validate_str(cls, str_) -> str:
-        if not isinstance(str, str_):
+    def validate_str(cls, v) -> str:
+        if not isinstance(v, str):
             raise TypeError("Type must be str")
-        return str_
+        return v
 
     @validator('email', 'password')
-    def validate_bytes(cls, bytes_) -> bytes:
-        if not isinstance(bytes, bytes_):
+    def validate_bytes(cls, v) -> bytes:
+        if not isinstance(v, bytes):
             raise TypeError("Type must be bytes")
-        return bytes_
+        return v
 
     @validator('active')
-    def validate_bool(cls, bool_) -> bool:
-        if not isinstance(bool, bool_):
+    def validate_bool(cls, v) -> bool:
+        if not isinstance(v, bool):
             raise TypeError("Type must be boolean")
-        return bool_
+        return v

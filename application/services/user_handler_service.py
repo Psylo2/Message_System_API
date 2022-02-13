@@ -25,11 +25,11 @@ class UserHandlerService(ABC):
         ...
 
     @abstractmethod
-    def _get_user_by_id(self, user_id) -> "UserSchema":
+    def _get_user_by_id(self, user_id) -> "UserRepository":
         ...
 
     @abstractmethod
-    def _save_user(self, user: "UserModel") -> 'UserSchema':
+    def _save_user(self, user: "UserModel") -> 'UserRepository':
         ...
 
     @abstractmethod

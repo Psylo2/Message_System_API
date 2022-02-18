@@ -35,8 +35,9 @@ class LogModel(BaseModel):
             raise TypeError("Type must be Threat Level Enum Member")
         return v
 
-    def _get_threat_level_enum_values(self) -> Set:
-        return set(map(lambda x: x.value, self.ThreatLevel))
+    @classmethod
+    def _get_threat_level_enum_values(cls) -> Set:
+        return set(map(lambda x: x.value, cls.ThreatLevel))
 
     class ThreatLevel(Enum):
         LOW = 'L'

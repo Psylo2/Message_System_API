@@ -9,7 +9,6 @@ class UserModel(BaseModel):
     password: bytes
     create_at:  Optional[Union[float, str]]
     last_login: Optional[float]
-    active:  bool = False
 
     @validator('name')
     def validate_str(cls, v) -> str:
@@ -23,8 +22,3 @@ class UserModel(BaseModel):
             raise TypeError("Type must be bytes")
         return v
 
-    @validator('active')
-    def validate_bool(cls, v) -> bool:
-        if not isinstance(v, bool):
-            raise TypeError("Type must be boolean")
-        return v

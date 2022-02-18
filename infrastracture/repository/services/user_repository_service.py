@@ -5,7 +5,7 @@ from typing import List, Dict
 class UserRepositoryService(ABC):
 
     @abstractmethod
-    def save_user(self, user_data: Dict) -> "UserSchema":
+    def save_user(self, user_data: Dict) -> "UserRepository":
         ...
 
     @abstractmethod
@@ -13,19 +13,19 @@ class UserRepositoryService(ABC):
         ...
 
     @abstractmethod
-    def find_by_id(self, idx: int) -> "UserSchema":
+    def find_by_id(self, idx: int) -> "UserRepository":
         ...
 
     @abstractmethod
-    def find_by_username(self, name: str) -> "UserSchema":
+    def find_by_username(self, name: str) -> "UserRepository":
         ...
 
     @abstractmethod
-    def find_by_email(self, email: str) -> "UserSchema":
+    def find_by_email(self, email: str) -> "UserRepository":
         ...
 
     @abstractmethod
-    def find_all_not_u(self, idx: int) -> "UserSchema":
+    def find_all_not_u(self, idx: int) -> "UserRepository":
         ...
 
     @abstractmethod
@@ -33,11 +33,11 @@ class UserRepositoryService(ABC):
         ...
 
     @abstractmethod
-    def _get_all_users(self) -> List["UserSchema"]:
+    def _get_all_users(self) -> List["UserRepository"]:
         ...
 
     @abstractmethod
-    def _encrypt_fields(self, user_data: Dict) -> None:
+    def encrypt_fields(self, user_data: Dict) -> None:
         ...
 
     @abstractmethod

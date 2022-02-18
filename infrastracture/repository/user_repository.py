@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
-from repository.repository import repository
-from repository.services import RepositoryService
+from infrastracture.repository.repository import repository
+from infrastracture.repository.services import RepositoryService
 
 
 class UserRepository(repository.Model, RepositoryService):
@@ -12,17 +12,13 @@ class UserRepository(repository.Model, RepositoryService):
     password = repository.Column(repository.LargeBinary, nullable=False)
     create_at = repository.Column(repository.Float, nullable=True)
     last_login = repository.Column(repository.Float, nullable=True)
-    active = repository.Column(repository.Boolean, default=False, nullable=False)
 
     def __init__(self, id: Union[int, None],  name: str, email: str,
-                 password: str, active: bool,
-                 create_at: float = None,
-                 last_login: float = None):
+                 password: str, create_at: float = None, last_login: float = None):
         self.id = id
         self.name = name
         self.email = email
         self.password = password
-        self.active = active
         self.create_at = create_at
         self.last_login = last_login
 
@@ -42,6 +38,5 @@ class UserRepository(repository.Model, RepositoryService):
                 "name": self.name,
                 "email": self.email,
                 "password": self.password,
-                "active": self.active,
                 "create_at": self.create_at,
                 "last_login": self.last_login}

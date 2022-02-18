@@ -1,9 +1,9 @@
 import hashlib
 from typing import Dict, List
 
-from repository.repository import repository
-from repository.message_repository import MessageRepository
-from repository.services import MessageRepositoryService
+from infrastracture.repository.repository import repository
+from infrastracture.repository.message_repository import MessageRepository
+from infrastracture.repository.services import MessageRepositoryService
 from manager import RepositoryManager
 
 class MessageRepositoryController(RepositoryManager, MessageRepositoryService):
@@ -17,14 +17,14 @@ class MessageRepositoryController(RepositoryManager, MessageRepositoryService):
         message.add_to_repository()
 
     def insert_timestamp(self) -> float:
-        return self.insert_timestamp()
+        return super().insert_timestamp()
 
     def convert_timestamp(self, timestamp: float) -> str:
-        return self.convert_timestamp(timestamp=timestamp)
+        return super().convert_timestamp(timestamp=timestamp)
 
     def generate_message_hash_key(self, user_send: int, user_receive: int, message_title: str, message_body: str,
                                   created_date: float) -> str:
-        created_date = self.convert_timestamp(timestamp=created_date)
+        created_date = super().convert_timestamp(timestamp=created_date)
         aggregate_context = f"{str(user_send)}{str(user_receive)}{message_title}{message_body}{created_date}"
         sha512 = hashlib.sha512()
         sha512.update(aggregate_context.encode('UTF-8'))
@@ -55,5 +55,5 @@ class MessageRepositoryController(RepositoryManager, MessageRepositoryService):
 
     def _update_read_status(self, id: int) -> None:
         message = MessageRepository.query.filter_by(id=id).update(dict(read_status=True))
-        message.read_at = self.insert_timestamp()
+        message.read_at = super().insert_timestamp()
         message.update_in_repository()

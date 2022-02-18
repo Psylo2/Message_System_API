@@ -1,3 +1,0 @@
-from repository.controllers.user_repository_controller import UserRepositoryController
-from repository.controllers.message_repository_controller import MessageRepositoryController
-from repository.controllers.log_repository_controller import LogRepositoryController

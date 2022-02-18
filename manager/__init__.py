@@ -1,3 +1,4 @@
 from manager.repository_manager import RepositoryManager
-from manager.jwt_configuration_manager import JWTConfigurationManager
 from manager.fields_validation_manager import FieldsValidation
+from manager.app_configuration_manager import AppConfigurations
+from manager.string_manager import StringManager

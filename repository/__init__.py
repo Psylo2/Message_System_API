@@ -1,3 +1,0 @@
-from repository.user_repository import UserRepository
-from repository.message_repository import MessageRepository
-from repository.log_repository import LogRepository

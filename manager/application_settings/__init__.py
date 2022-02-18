@@ -1,0 +1,2 @@
+from manager.application_settings import application_settings
+

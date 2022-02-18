@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
-from repository.repository import repository
-from repository.services import RepositoryService
+from infrastracture.repository.repository import repository
+from infrastracture.repository.services import RepositoryService
 
 class LogRepository(repository.Model, RepositoryService):
     __tablename__ = 'logs'

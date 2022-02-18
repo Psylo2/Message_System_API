@@ -29,6 +29,10 @@ class UserHandlerService(ABC):
         ...
 
     @abstractmethod
+    def _user_register(self, user_data: Dict) -> None:
+        ...
+
+    @abstractmethod
     def _save_user(self, user: "UserModel") -> 'UserRepository':
         ...
 

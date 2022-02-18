@@ -1,8 +1,8 @@
 from typing import Dict, Tuple, List
 
-from usecases import MessageUseCase
+from application.usecases import MessageUseCase
 from application.services import MessageHandlerService
-from models import MessageModel
+from domain.models import MessageModel
 
 
 class MessageHandler(MessageUseCase, MessageHandlerService):

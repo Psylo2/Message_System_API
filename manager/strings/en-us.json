@@ -2,6 +2,7 @@
   "invalid_credentials": "Invalid credentials.",
   "field_not_blank": "This field cannot be blank.",
   "admin_privilege": "Admin privilege required.",
+  "admin_not_allowed": "Admin can't reach here.",
   "input_error": "Invalid Inputs",
   "language_changed": "Language has changed successfully",
   "user_registered": "User successfully Registered!",
@@ -12,12 +13,11 @@
   "user_already_block": "User already in block list",
   "user_password_updated": "Password has been changed successfully.",
   "user_email_taken": "Email already exists.",
-  "user_name_exists": "Username already exists.",
+  "user_name_exists": "Username already in use.",
   "username_error": "Name must be no less then 4 Letters",
   "email_error": "Invalid Email Address",
   "password_error": "Password must contain 1 Upper 1 Lower 1 Digit 1 Special, and between 10 and 16 characters",
   "password_changed": "Password Changed Successfully.",
   "passwords_not_match": "Password dont match",
-  "msg_sent": "Message Sent.",
-  "admin_password": "WARNING! ADMIN CANNOT CHANGE PASSWORD HERE"
+  "msg_sent": "Message Sent."
 }

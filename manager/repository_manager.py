@@ -9,8 +9,6 @@ from manager.services import RepositoryService
 
 
 class RepositoryManager(RepositoryService):
-    def __init__(self):
-        pass
 
     def encrypt(self, string: str) -> bytes:
         """Encrypt given string"""

@@ -38,7 +38,8 @@ class FieldsValidation(FieldsValidationService):
 
     def is_valid_login_inputs(self, name_email: str, password: str) -> bool:
         """Regex Formula for User's Username or Email"""
-        return True if self.__sanitizer(name_email) and self.__sanitizer(password) else False
+        return True if (self.is_valid_email(name_email) or self.is_valid_username(name_email)) \
+                       and self.is_valid_password(password) else False
 
     def is_valid_msg_inputs(self, string: str) -> bool:
         """Regex Formula for String"""

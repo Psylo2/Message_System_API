@@ -1,5 +1,6 @@
-from repository.controllers import UserRepositoryController, MessageRepositoryController, LogRepositoryController
-from manager import FieldsValidation
+from infrastracture.repository.controllers import (UserRepositoryController, MessageRepositoryController,
+                                                   LogRepositoryController)
+from manager import FieldsValidation, StringManager
 
 class Factory:
     def __init__(self):
@@ -7,6 +8,7 @@ class Factory:
         self._message_repository = None
         self._logs_repository = None
         self._field_validation = None
+        self._string_manager = None
 
     def get_user_repository(self) -> UserRepositoryController:
         if not self._user_repository:
@@ -27,3 +29,8 @@ class Factory:
         if not self._field_validation:
             self._field_validation = FieldsValidation()
         return self._field_validation
+
+    def get_string_manager(self) -> StringManager:
+        if not self._string_manager:
+            self._string_manager = StringManager()
+        return self._string_manager

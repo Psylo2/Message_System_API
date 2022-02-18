@@ -1,20 +1,13 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+from flask_restful.reqparse import RequestParser
 from flask_jwt_extended import jwt_required, get_jwt_identity
-
-from libs.strings import gettext
-
-"""Messages:     [*] send msg
-                 [*] read msg
-                 [*] display all unread Msg Titles
-                 [*] display all read Msg Titles
-                 [*] display all received msg Titles
-                 [*] display all sent msg Titles"""
 
 
 class MessageSend(Resource):
     def __init__(self, *args, handler, **kwargs):
         self._handler = handler
-        self._parser = reqparse.RequestParser()
+        self._parser = RequestParser()
+
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -22,20 +15,20 @@ class MessageSend(Resource):
         """Send Message:     [*] Validate inputs
                              [*] find user receive message by idx
                              [*] Send MSG"""
-        self._parse.add_argument('send_to',
-                                 type=str,
-                                 required=True,
-                                 help=gettext("field_not_blank"))
-        self._parse.add_argument('title',
-                                 type=str,
-                                 required=True,
-                                 help=gettext("field_not_blank"))
-        self._parse.add_argument('body',
-                                 type=str,
-                                 required=True,
-                                 help=gettext("field_not_blank"))
+        self._parser.add_argument('send_to',
+                                  type=str,
+                                  required=True,
+                                  help="This field cannot be blank.")
+        self._parser.add_argument('title',
+                                  type=str,
+                                  required=True,
+                                  help="This field cannot be blank.")
+        self._parser.add_argument('body',
+                                  type=str,
+                                  required=True,
+                                  help="This field cannot be blank.")
 
-        data = self._parse.parse_args()
+        data = self._parser.parse_args()
         try:
             response, status_code = self._handler.send_message(user_id=get_jwt_identity(),
                                                                message_data=data)

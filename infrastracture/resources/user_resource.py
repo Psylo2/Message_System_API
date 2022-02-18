@@ -1,19 +1,12 @@
+from flask_restful import Resource
+from flask_restful.reqparse import RequestParser
 from flask_jwt_extended import jwt_required, jwt_refresh_token_required
-from flask_restful import Resource, reqparse
-from libs.strings import gettext
-
-
-"""User:      [*] Register
-              [*] Login
-              [*] Logout
-              [*] Refresh Access Token
-              [*] Change Password"""
 
 
 class UserRegister(Resource):
     def __init__(self, *args, handler, **kwargs):
         self._handler = handler
-        self._parser = reqparse.RequestParser()
+        self._parser = RequestParser()
         super().__init__(*args, **kwargs)
 
     def post(self):
@@ -21,18 +14,18 @@ class UserRegister(Resource):
                      [*] Confirm user not already exists
                      [*] Save user to DB"""
 
-        self._parser.add_argument('username',
+        self._parser.add_argument('name',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
         self._parser.add_argument('password',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
         self._parser.add_argument('email',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
 
         try:
             data = self._parser.parse_args()
@@ -46,7 +39,7 @@ class UserRegister(Resource):
 class UserLogin(Resource):
     def __init__(self, *args, handler, **kwargs):
         self._handler = handler
-        self._parser = reqparse.RequestParser()
+        self._parser = RequestParser()
         super().__init__(*args, **kwargs)
 
     def post(self):
@@ -58,11 +51,11 @@ class UserLogin(Resource):
         self._parser.add_argument('username_email',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
         self._parser.add_argument('password',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
 
         try:
             data = self._parser.parse_args()
@@ -111,7 +104,7 @@ class TokenRefresh(Resource):
 class UserForgetPassword(Resource):
     def __init__(self, *args, handler, **kwargs):
         self._handler = handler
-        self._parser = reqparse.RequestParser()
+        self._parser = RequestParser()
         super().__init__(*args, **kwargs)
 
     def post(self):
@@ -120,22 +113,22 @@ class UserForgetPassword(Resource):
                                  [*] Verify Password
                                  [*] Update user.password to DB"""
 
-        self._parser.add_argument('username',
+        self._parser.add_argument('name',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
         self._parser.add_argument('email',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
         self._parser.add_argument('new_password',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
         self._parser.add_argument('re_password',
                                   type=str,
                                   required=True,
-                                  help=gettext("field_not_blank"))
+                                  help="This field cannot be blank.")
 
         data = self._parser.parse_args()
         try:

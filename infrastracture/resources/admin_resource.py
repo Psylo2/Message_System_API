@@ -15,6 +15,7 @@ class AdminUsersList(Resource):
         super().__init__(*args, **kwargs)
 
     @jwt_required
+
     def get(self):
         """All Users List:    [*] Admin privileges only!
                               [*] Display all users data except passwords and emails"""

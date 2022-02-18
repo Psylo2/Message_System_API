@@ -1,6 +1,6 @@
 from typing import Dict, Tuple, List
 
-from usecases import AdminUseCase
+from application.usecases import AdminUseCase
 from application.services import AdminHandlerService
 
 

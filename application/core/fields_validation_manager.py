@@ -1,6 +1,6 @@
 import re
 
-from manager.services import FieldsValidationService
+from application.core.services import FieldsValidationService
 
 
 class FieldsValidationManager(FieldsValidationService):

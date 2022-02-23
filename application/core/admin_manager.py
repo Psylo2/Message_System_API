@@ -4,8 +4,10 @@ from flask import current_app
 from flask_jwt_extended import get_jwt_identity
 
 from infrastracture.repository.queries import UserRepositoryQueries
+from application.core import RepositoryManager
 
-__user_repository = UserRepositoryQueries()
+__repository_manager_service = RepositoryManager()
+__user_repository = UserRepositoryQueries(repository_services=__repository_manager_service)
 
 def requires_admin(fun: Callable) -> Callable:
     @functools.wraps(fun)

@@ -1,0 +1,1 @@
+from application.core.application_settings import application_settings

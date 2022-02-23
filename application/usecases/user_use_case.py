@@ -4,7 +4,7 @@ from flask_jwt_extended import (get_raw_jwt, get_jwt_identity,
 
 from typing import Dict, Tuple, Set
 from infrastracture.repository.services import UserRepositoryService
-from manager.services import FieldsValidationService, StringManagerService
+from application.core.services import FieldsValidationService, StringManagerService
 
 from application.services import UserUseCaseService, LogUseCaseService
 from domain.models import UserModel

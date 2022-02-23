@@ -1,7 +1,7 @@
 import hashlib
 from typing import Dict, List
 
-from manager.services import RepositoryService
+from application.core.services import RepositoryService
 from infrastracture.repository.repository import repository
 from infrastracture.repository.message_repository import MessageRepository
 from infrastracture.repository.services import MessageRepositoryService

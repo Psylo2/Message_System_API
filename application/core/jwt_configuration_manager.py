@@ -1,7 +1,7 @@
 from flask_jwt_extended import JWTManager
 
 
-from manager.blacklist_manager import BLACKLIST
+from application.core.blacklist_manager import BLACKLIST
 
 
 class JWTConfigurationManager:

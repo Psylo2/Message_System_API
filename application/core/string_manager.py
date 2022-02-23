@@ -1,6 +1,6 @@
 import json
 
-from manager.services import StringManagerService
+from application.core.services import StringManagerService
 
 
 class StringManager(StringManagerService):
@@ -10,7 +10,7 @@ class StringManager(StringManagerService):
         self.refresh_cache()
 
     def refresh_cache(self) -> None:
-        with open(f"manager/strings/{self.default_locale}.json") as f:
+        with open(f"application/core/strings/{self.default_locale}.json") as f:
             self.cached_strings = json.load(f)
 
     def gettext(self, name) -> str:

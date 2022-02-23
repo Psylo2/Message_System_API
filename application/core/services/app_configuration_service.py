@@ -26,7 +26,3 @@ class AppConfigurationService(ABC):
     @abstractmethod
     def _add_admin(self, factory) -> None:
         ...
-
-    @abstractmethod
-    def jwt_configuration(self, jwt) -> None:
-        ...

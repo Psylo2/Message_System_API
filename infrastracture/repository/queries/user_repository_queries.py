@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from manager.services import RepositoryService
+from application.core.services import RepositoryService
 from infrastracture.repository.repository import repository
 from infrastracture.repository.user_repository import UserRepository
 from infrastracture.repository.services import UserRepositoryService

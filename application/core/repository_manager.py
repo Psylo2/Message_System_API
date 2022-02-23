@@ -5,7 +5,7 @@ import pytz
 from datetime import datetime
 from tzlocal import get_localzone
 
-from manager.services import RepositoryService
+from application.core.services import RepositoryService
 
 
 class RepositoryManager(RepositoryService):

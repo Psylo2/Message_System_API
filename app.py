@@ -6,49 +6,51 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
-from manager import AppConfigurations, RepositoryManager, StringManager, FieldsValidationManager
-from manager.blacklist_manager import BLACKLIST
-
+from application.core import (AppConfigurations, JWTConfigurationManager, RepositoryManager, StringManager,
+                              FieldsValidationManager, BLACKLIST)
+from application.usecases import LogUseCase, UserUseCase, MessageUseCase, AdminUseCase
 from interface.resources import *
 
 from infrastracture.repository import repository
 from infrastracture.repository.queries import LogRepositoryQueries, UserRepositoryQueries, MessageRepositoryQueries
 
-from application.usecases import LogUseCase, UserUseCase, MessageUseCase, AdminUseCase
-
 app = Flask(__name__)
 app_configuration = AppConfigurations(app=app, repository=repository)
 
 jwt = JWTManager(app)
-app_configuration.jwt_configuration(jwt=jwt)
+JWTConfigurationManager(jwt=jwt)
 
 api = Api(app)
 
+# Manager Services
 repository_manager_service = RepositoryManager()
 field_validation_manager_service = FieldsValidationManager()
 string_manager_service = StringManager()
 
-# Repository queries
+# Repository Queries
 log_repository_queries = LogRepositoryQueries(repository_services=repository_manager_service)
 user_repository_queries = UserRepositoryQueries(repository_services=repository_manager_service)
 message_repository_queries = MessageRepositoryQueries(repository_services=repository_manager_service)
 
 # Use Cases
 log_use_case = LogUseCase(logs_repository_service=log_repository_queries)
+
 user_use_case = UserUseCase(user_repository_service=user_repository_queries,
                             log_use_case_service=log_use_case,
                             field_validation_service=field_validation_manager_service,
                             string_manager_service=string_manager_service,
                             black_list=BLACKLIST)
+
 message_use_case = MessageUseCase(message_repository_service=message_repository_queries,
                                   user_repository_service=user_repository_queries,
                                   log_use_case_service=log_use_case,
                                   field_validation_service=field_validation_manager_service)
+
 admin_use_case = AdminUseCase(user_repository_service=user_repository_queries,
                               logs_repository_service=log_repository_queries,
                               log_use_case_service=log_use_case)
 
-# interface.user
+# User Interface
 api.add_resource(UserRegister,
                  '/register',
                  resource_class_kwargs={"use_case": user_use_case})
@@ -73,7 +75,7 @@ api.add_resource(UserDelete,
                  '/delete',
                  resource_class_kwargs={"use_case": user_use_case})
 
-# interface.message
+# Message Interface
 api.add_resource(MessageSend,
                  '/msg/send',
                  resource_class_kwargs={"use_case": message_use_case})
@@ -102,7 +104,7 @@ api.add_resource(MessageReadByRec,
                  '/msg/all_receivers_read',
                  resource_class_kwargs={"use_case": message_use_case})
 
-# interface.admin
+# Admin Interface
 api.add_resource(AdminUsersList,
                  '/admin_users_list',
                  resource_class_kwargs={"use_case": admin_use_case})

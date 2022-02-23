@@ -1,6 +1,6 @@
 from typing import Dict, Tuple, List
 
-from manager.services import FieldsValidationService
+from application.core.services import FieldsValidationService
 from infrastracture.repository.services import MessageRepositoryService, UserRepositoryService
 from application.services import LogUseCaseService, MessageUseCaseService
 from domain.models import MessageModel

@@ -1,0 +1,3 @@
+from infrastracture.repository.queries.user_repository_queries import UserRepositoryQueries
+from infrastracture.repository.queries.log_repository_queries import LogRepositoryQueries
+from infrastracture.repository.queries.message_repository_queries import MessageRepositoryQueries

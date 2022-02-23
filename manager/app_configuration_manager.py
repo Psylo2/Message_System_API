@@ -33,12 +33,12 @@ class AppConfigurations(AppConfigurationService):
     def jwt_configuration(self, jwt) -> None:
         JWTConfigurationManager(jwt=jwt)
 
-    def _add_admin(self, user_handler) -> None:
+    def _add_admin(self, user_use_case) -> None:
         admin_name = os.environ.get('ADMIN_NAME')
-        if not user_handler._is_user_name_exist(name=admin_name):
+        if not user_use_case._is_user_name_exist(name=admin_name):
 
             admin = {"id": 1,
                      "name": admin_name,
                      "email": os.environ.get('ADMIN_EMAIL'),
                      "password": os.environ.get('ADMIN_PASSWORD')}
-            user_handler._user_register(user_data=admin)
+            user_use_case._user_register(user_data=admin)

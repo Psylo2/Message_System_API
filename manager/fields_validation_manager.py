@@ -3,7 +3,7 @@ import re
 from manager.services import FieldsValidationService
 
 
-class FieldsValidation(FieldsValidationService):
+class FieldsValidationManager(FieldsValidationService):
     def __init__(self):
         pass
 

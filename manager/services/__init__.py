@@ -1,4 +1,4 @@
-from manager.services.repository_manager_service import RepositoryService
+from manager.services.repository_service import RepositoryService
 from manager.services.fields_validation_service import FieldsValidationService
 from manager.services.app_configuration_service import AppConfigurationService
 from manager.services.string_manager_service import StringManagerService

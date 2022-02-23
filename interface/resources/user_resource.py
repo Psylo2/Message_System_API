@@ -4,8 +4,8 @@ from flask_jwt_extended import jwt_required, jwt_refresh_token_required
 
 
 class UserRegister(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         self._parser = RequestParser()
         super().__init__(*args, **kwargs)
 
@@ -29,7 +29,7 @@ class UserRegister(Resource):
 
         try:
             data = self._parser.parse_args()
-            response, status_code = self._handler.user_register(user_data=data)
+            response, status_code = self._use_case.user_register(user_data=data)
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -37,8 +37,8 @@ class UserRegister(Resource):
 
 
 class UserLogin(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         self._parser = RequestParser()
         super().__init__(*args, **kwargs)
 
@@ -59,7 +59,7 @@ class UserLogin(Resource):
 
         try:
             data = self._parser.parse_args()
-            response, status_code = self._handler.user_login(user_data=data)
+            response, status_code = self._use_case.user_login(user_data=data)
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -67,8 +67,8 @@ class UserLogin(Resource):
 
 
 class UserLogout(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -77,7 +77,7 @@ class UserLogout(Resource):
                       [*] Take user uuid token identity
                       [*] Insert to Black list for revoke Token"""
         try:
-            response, status_code = self._handler.user_logout()
+            response, status_code = self._use_case.user_logout()
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -85,8 +85,8 @@ class UserLogout(Resource):
 
 
 class TokenRefresh(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_refresh_token_required
@@ -94,7 +94,7 @@ class TokenRefresh(Resource):
         """Token Refresh:
                           [*] Recreate Access Token by user Identity"""
         try:
-            response, status_code = self._handler.user_refresh_token()
+            response, status_code = self._use_case.user_refresh_token()
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -102,8 +102,8 @@ class TokenRefresh(Resource):
 
 
 class UserForgetPassword(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         self._parser = RequestParser()
         super().__init__(*args, **kwargs)
 
@@ -132,7 +132,7 @@ class UserForgetPassword(Resource):
 
         data = self._parser.parse_args()
         try:
-            response, status_code = self._handler.user_forgot_password(user_data=data)
+            response, status_code = self._use_case.user_forgot_password(user_data=data)
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -140,8 +140,8 @@ class UserForgetPassword(Resource):
 
 
 class UserDelete(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -151,7 +151,7 @@ class UserDelete(Resource):
                       [*] Insert to Black list for revoke Token"""
 
         try:
-            response, status_code = self._handler.user_delete()
+            response, status_code = self._use_case.user_delete()
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",

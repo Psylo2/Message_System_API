@@ -4,8 +4,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 class MessageSend(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         self._parser = RequestParser()
 
         super().__init__(*args, **kwargs)
@@ -30,7 +30,7 @@ class MessageSend(Resource):
 
         data = self._parser.parse_args()
         try:
-            response, status_code = self._handler.send_message(user_id=get_jwt_identity(),
+            response, status_code = self._use_case.send_message(user_id=get_jwt_identity(),
                                                                message_data=data)
             return response, status_code
         except Exception as err:
@@ -39,8 +39,8 @@ class MessageSend(Resource):
 
 
 class MessageRead(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -50,7 +50,7 @@ class MessageRead(Resource):
                              [*] only receiver set mark as read
                              [*] Display MSG"""
         try:
-            response, status_code = self._handler.read_message(user_id=get_jwt_identity(),
+            response, status_code = self._use_case.read_message(user_id=get_jwt_identity(),
                                                                message_id=msg_id)
             return response, status_code
         except Exception as err:
@@ -59,8 +59,8 @@ class MessageRead(Resource):
 
 
 class MessageAllUnread(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -68,7 +68,7 @@ class MessageAllUnread(Resource):
         """All Unread Message:
                                   [*] Display all Unread MSGs of User by identity"""
         try:
-            response, status_code = self._handler.get_all_unread_messages(user_id=get_jwt_identity())
+            response, status_code = self._use_case.get_all_unread_messages(user_id=get_jwt_identity())
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -76,8 +76,8 @@ class MessageAllUnread(Resource):
 
 
 class MessageAllRead(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -85,7 +85,7 @@ class MessageAllRead(Resource):
         """All Read Message:
                                   [*] Display all Read MSGs of User by identity"""
         try:
-            response, status_code = self._handler.get_all_read_messages(user_id=get_jwt_identity())
+            response, status_code = self._use_case.get_all_read_messages(user_id=get_jwt_identity())
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -93,8 +93,8 @@ class MessageAllRead(Resource):
 
 
 class MessageAllReceived(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -102,7 +102,7 @@ class MessageAllReceived(Resource):
         """All Received Message:
                                   [*] Display all Received MSGs of User by identity"""
         try:
-            response, status_code = self._handler.get_all_received_messages(user_id=get_jwt_identity())
+            response, status_code = self._use_case.get_all_received_messages(user_id=get_jwt_identity())
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -110,8 +110,8 @@ class MessageAllReceived(Resource):
 
 
 class MessageAllSent(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -119,7 +119,7 @@ class MessageAllSent(Resource):
         """All Sent Message:
                                   [*] Display all Sent MSGs of User by identity"""
         try:
-            response, status_code = self._handler.get_all_sent_messages(user_id=get_jwt_identity())
+            response, status_code = self._use_case.get_all_sent_messages(user_id=get_jwt_identity())
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",
@@ -127,8 +127,8 @@ class MessageAllSent(Resource):
 
 
 class MessageReadByRec(Resource):
-    def __init__(self, *args, handler, **kwargs):
-        self._handler = handler
+    def __init__(self, *args, use_case, **kwargs):
+        self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
@@ -136,7 +136,7 @@ class MessageReadByRec(Resource):
         """All Been Read Message:
                                   [*] Display all MSG's Been Read of User by identity by other others."""
         try:
-            response, status_code = self._handler.get_all_read_by_receiver_messages(user_id=get_jwt_identity())
+            response, status_code = self._use_case.get_all_read_by_receiver_messages(user_id=get_jwt_identity())
             return response, status_code
         except Exception as err:
             return {"message": "Error occurred",

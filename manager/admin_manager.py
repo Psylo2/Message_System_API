@@ -3,9 +3,9 @@ from typing import Callable
 from flask import current_app
 from flask_jwt_extended import get_jwt_identity
 
-from infrastracture.repository.controllers import UserRepositoryController
+from infrastracture.repository.queries import UserRepositoryQueries
 
-__user_repository = UserRepositoryController()
+__user_repository = UserRepositoryQueries()
 
 def requires_admin(fun: Callable) -> Callable:
     @functools.wraps(fun)

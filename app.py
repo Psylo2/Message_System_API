@@ -6,13 +6,20 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
-from application.core import (AppConfigurations, JWTConfigurationManager, RepositoryManager, StringManager,
-                              FieldsValidationManager, BLACKLIST)
-from application.usecases import LogUseCase, UserUseCase, MessageUseCase, AdminUseCase
-from interface.resources import *
+
+from interface.resources.user_resource import (UserRegister, UserLogin, UserLogout, UserDelete,
+                                               UserForgetPassword, TokenRefresh)
+from interface.resources.admin_resource import (AdminUsersList, AdminWatchLogs, AdminSearchByUserId,
+                                                AdminSearchByLogId, AdminSearchByThreat)
+from interface.resources.message_resource import (MessageRead, MessageSend, MessageAllRead, MessageAllSent,
+                                                  MessageAllUnread, MessageAllReceived, MessageReadByRec)
 
 from infrastracture.repository import repository
 from infrastracture.repository.queries import LogRepositoryQueries, UserRepositoryQueries, MessageRepositoryQueries
+
+from application.core import (AppConfigurations, JWTConfigurationManager, RepositoryManager, StringManager,
+                              FieldsValidationManager, BLACKLIST)
+from application.usecases import LogUseCase, UserUseCase, MessageUseCase, AdminUseCase
 
 app = Flask(__name__)
 app_configuration = AppConfigurations(app=app, repository=repository)

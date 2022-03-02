@@ -2,9 +2,11 @@ from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from application.services import MessageUseCaseService
+
 
 class MessageSend(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         self._parser = RequestParser()
 
@@ -39,7 +41,7 @@ class MessageSend(Resource):
 
 
 class MessageRead(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -59,7 +61,7 @@ class MessageRead(Resource):
 
 
 class MessageAllUnread(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -76,7 +78,7 @@ class MessageAllUnread(Resource):
 
 
 class MessageAllRead(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -93,7 +95,7 @@ class MessageAllRead(Resource):
 
 
 class MessageAllReceived(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -110,7 +112,7 @@ class MessageAllReceived(Resource):
 
 
 class MessageAllSent(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -127,7 +129,7 @@ class MessageAllSent(Resource):
 
 
 class MessageReadByRec(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: MessageUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 

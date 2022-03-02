@@ -1,6 +1,8 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt_claims
 
+from application.services import AdminUseCaseService
+
 """Admin:     [*] Grant Admin Privileges, [*] All Users List,
               [*] Watch All Logs, [*] Watch Log by ID, 
               [*] Watch All Logs by Treat Level, 
@@ -9,7 +11,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt_claims
 
 
 class AdminUsersList(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: AdminUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -27,7 +29,7 @@ class AdminUsersList(Resource):
 
 
 class AdminWatchLogs(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: AdminUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -45,7 +47,7 @@ class AdminWatchLogs(Resource):
 
 
 class AdminSearchByLogId(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: AdminUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -64,12 +66,12 @@ class AdminSearchByLogId(Resource):
 
 
 class AdminSearchByThreat(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: AdminUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
     @jwt_required
-    def post(self, lvl: int):
+    def post(self, lvl: str):
         """Search Log by Log.idx:    [*] Admin privileges only!
                                      [*] Display all logs by chosen threat level"""
 
@@ -84,7 +86,7 @@ class AdminSearchByThreat(Resource):
 
 
 class AdminSearchByUserId(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: AdminUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 

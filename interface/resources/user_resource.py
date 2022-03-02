@@ -2,9 +2,11 @@ from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from flask_jwt_extended import jwt_required, jwt_refresh_token_required
 
+from application.services import UserUseCaseService
+
 
 class UserRegister(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: UserUseCaseService, **kwargs):
         self._use_case = use_case
         self._parser = RequestParser()
         super().__init__(*args, **kwargs)
@@ -37,7 +39,7 @@ class UserRegister(Resource):
 
 
 class UserLogin(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: UserUseCaseService, **kwargs):
         self._use_case = use_case
         self._parser = RequestParser()
         super().__init__(*args, **kwargs)
@@ -67,7 +69,7 @@ class UserLogin(Resource):
 
 
 class UserLogout(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: UserUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -85,7 +87,7 @@ class UserLogout(Resource):
 
 
 class TokenRefresh(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: UserUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
@@ -102,7 +104,7 @@ class TokenRefresh(Resource):
 
 
 class UserForgetPassword(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: UserUseCaseService, **kwargs):
         self._use_case = use_case
         self._parser = RequestParser()
         super().__init__(*args, **kwargs)
@@ -140,7 +142,7 @@ class UserForgetPassword(Resource):
 
 
 class UserDelete(Resource):
-    def __init__(self, *args, use_case, **kwargs):
+    def __init__(self, *args, use_case: UserUseCaseService, **kwargs):
         self._use_case = use_case
         super().__init__(*args, **kwargs)
 
